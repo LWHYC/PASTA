@@ -31,7 +31,7 @@ Encompasses malignancies across ten organ systems and five benign lesion types, 
     - Each synthetic 3D CT volume includes pixel-level lesion annotations and a structured radiological report.
 
 # Checkpoint
-- 
+- [Google Drive](https://drive.google.com/file/d/1oEAmVn-TrkniH83JXEXrrB08aTv0yCsn/view?usp=drive_link)
 
 # Train
 - ## Segmentation
