@@ -14,7 +14,7 @@ PASTA achieves state-of-the-art results on a wide range of tasks, including:
 - Structured report generation
 - Cross-modality transfer learning
 
-<img src="https://github.com/LWHYC/PASTA/blob/main/fig/fig1.png" alt="PASTA Logo" width="300" />
+<img src="https://github.com/LWHYC/PASTA/blob/main/fig/fig1.png" alt="PASTA Logo" width="600" />
 
 
 
