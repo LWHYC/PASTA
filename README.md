@@ -3,7 +3,7 @@ A Data-Efficient Pan-Tumor Foundation Model for Oncology CT Interpretation
 
 
 # Overview
-PASTA (Pan-Tumor Analysis with Synthetic Training Assistance) is a data-efficient foundation model for analyzing diverse tumor lesions in 3D CT scans. Leveraging PASTA-Gen-30K, a large-scale synthetic dataset of 30,000 CT volumes with precise lesion masks and structured textual reports, PASTA addresses the scarcity of high-quality annotated data that traditionally hinders radiological AI research.
+PASTA (Pan-Tumor Analysis with Synthetic Training Augmentation) is a data-efficient foundation model for analyzing diverse tumor lesions in 3D CT scans. Leveraging PASTA-Gen-30K, a large-scale synthetic dataset of 30,000 CT volumes with precise lesion masks and structured textual reports, PASTA addresses the scarcity of high-quality annotated data that traditionally hinders radiological AI research.
 
 PASTA achieves state-of-the-art results on a wide range of tasks, including:
 
@@ -14,7 +14,7 @@ PASTA achieves state-of-the-art results on a wide range of tasks, including:
 - Structured report generation
 - Cross-modality transfer learning
 
-<img src="./PASTA/fig/fig1.png" alt="PASTA Logo" width="300" />
+<img src="https://github.com/LWHYC/PASTA/blob/main/fig/fig1.png" alt="PASTA Logo" width="300" />
 
 
 
