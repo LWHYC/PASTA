@@ -58,6 +58,7 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
 Our segmentation part is based on the [nnUNet](https://github.com/MIC-DKFZ/nnUNet).
 Prepare your dataset in the [this](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/dataset_format.md) format.
 
+\
 Finetuning with the following command: 
     
     python segmentation/nnunetv2/run/run_finetuning_pasta.py 3d_fullres PASTATrainer TASKID FOLD -pretrained_weights MODEL
