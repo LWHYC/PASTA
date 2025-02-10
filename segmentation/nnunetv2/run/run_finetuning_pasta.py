@@ -9,12 +9,11 @@ def load_PASTA_pretrained_weights(network, fname, verbose=False):
     saved_model = torch.load(fname)
 
     if fname.endswith('pth'):
-        pretrained_dict = saved_model['network_weights']
-    elif fname.endswith('model'):
-        pretrained_dict = saved_model['state_dict']
+        pretrained_dict = saved_model
 
     skip_strings_in_pretrained = [
         'seg_outputs',
+        'head'
     ]
 
     if isinstance(network, DDP):

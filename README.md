@@ -60,8 +60,8 @@ Few-shot training with the following command:
     python segmentation/nnunetv2/run/run_finetuning_pasta.py 3d_fullres PASTATrainer_fewshot TASKID FOLD -pretrained_weights MODEL
 
 
-- ## Classification
-    - For the plain-CT tumor detection task and the structured report generation task, we use the [nnClassify](https://github.com/MIC-DKFZ/nnClassify) framework.
+## Classification
+For the plain-CT tumor detection task and the structured report generation task, we use the [nnClassify](https://github.com/MIC-DKFZ/nnClassify) framework.
 
 # Acknowledgement
 
