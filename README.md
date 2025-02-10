@@ -44,9 +44,17 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
     - Each synthetic 3D CT volume includes pixel-level lesion annotations and a structured radiological report.
 
 # Checkpoint
-- [Google Drive](https://drive.google.com/file/d/1oEAmVn-TrkniH83JXEXrrB08aTv0yCsn/view?usp=drive_link)
+- [Google Drive](https://drive.google.com/file/d/1A_PjIAqKg0y_Z986HSfTsYKLhc99EMkD/view?usp=drive_link)
+
+\
+\
+**First of all, please standard your dataset with**
+   
+    python preprocess/NifitiStandard.py
+
 
 # Train
+
 ## Segmentation
 Our segmentation part is based on the [nnUNet](https://github.com/MIC-DKFZ/nnUNet).
 Prepare your dataset in the [this](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/dataset_format.md) format.
