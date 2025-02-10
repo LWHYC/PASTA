@@ -47,10 +47,9 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
 - [Google Drive](https://drive.google.com/file/d/1A_PjIAqKg0y_Z986HSfTsYKLhc99EMkD/view?usp=drive_link)
 
 \
-\
 **First of all, please standard your dataset with**
    
-    python preprocess/NifitiStandard.py
+    python preprocess/NifitiStandard.py -in /path/to/original/data/root -out /path/to/save/data/root
 
 
 # Train
