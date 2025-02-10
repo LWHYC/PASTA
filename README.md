@@ -46,13 +46,13 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
 # Checkpoint
 - [Google Drive](https://drive.google.com/file/d/1A_PjIAqKg0y_Z986HSfTsYKLhc99EMkD/view?usp=drive_link)
 
-\
+
+# Train
+
 **First of all, please standard your dataset with**
    
     python preprocess/NifitiStandard.py -in /path/to/original/data/root -out /path/to/save/data/root
 
-
-# Train
 
 ## Segmentation
 Our segmentation part is based on the [nnUNet](https://github.com/MIC-DKFZ/nnUNet).
