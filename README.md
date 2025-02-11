@@ -1,5 +1,5 @@
 # PASTA
-A Data-Efficient Pan-Tumor Foundation Model for Oncology CT Interpretation
+[A Data-Efficient Pan-Tumor Foundation Model for Oncology CT Interpretation](https://arxiv.org/abs/2502.06171)
 
 
 # Overview
