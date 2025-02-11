@@ -71,7 +71,7 @@ Few-shot training with the following command:
 
 
 ## Classification
-For the plain-CT tumor detection task and the structured report generation task, we use the [nnClassify](https://github.com/MIC-DKFZ/nnClassify) framework.
+<!-- For the plain-CT tumor detection task and the structured report generation task, we use the [nnClassify](https://github.com/MIC-DKFZ/nnClassify) framework. -->
 
 # Acknowledgement
 
