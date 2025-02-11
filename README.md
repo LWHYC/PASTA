@@ -51,13 +51,12 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
 
 # Train
 
-**First of all, please standard your dataset with**
+**First of all, please standardize your dataset with:**
    
     python preprocess/NifitiStandard.py -in /path/to/original/data/root -out /path/to/save/data/root
 
 
 ## Segmentation
-Our segmentation part is based on the [nnUNet](https://github.com/MIC-DKFZ/nnUNet).
 Prepare your dataset in the [this](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/dataset_format.md) format.
 
 \
@@ -75,7 +74,7 @@ Few-shot training with the following command:
 
 # Acknowledgement
 
-- We thank the authors of [nnUNet](https://github.com/MIC-DKFZ/nnUNet), [STU-Net](https://github.com/uni-medical/STU-Net), [FMCIB](https://github.com/AIM-Harvard/foundation-cancer-image-biomarker) for their great works. Please consider cite their papers if you use our code.
+- We thank the authors of [nnUNet](https://github.com/MIC-DKFZ/nnUNet), [STU-Net](https://github.com/uni-medical/STU-Net), [FMCIB](https://github.com/AIM-Harvard/foundation-cancer-image-biomarker) for their great works. Please cite their papers if you use our code.
 
 ```bibtex
 @article{isensee2021nnu,
