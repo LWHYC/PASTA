@@ -1,5 +1,7 @@
 # PASTA
-[A Data-Efficient Pan-Tumor Foundation Model for Oncology CT Interpretation](https://arxiv.org/abs/2502.06171)
+A Data-Efficient Pan-Tumor Foundation Model for Oncology CT Interpretation
+
+[Paper](https://arxiv.org/abs/2502.06171); [Dataset](https://huggingface.co/datasets/LWHYC/PASTA-Gen-30K); [Code](https://github.com/LWHYC/PASTA?tab=readme-ov-file)
 
 
 # Overview
