@@ -93,7 +93,7 @@ def save_extracted_nifti_slice(image, ed_frame: int, es_frame: int, out_dir: Pat
 # ------------------------------------------------------------------------------
 # Create custom splits
 # ------------------------------------------------------------------------------
-def create_custom_splits(src_data_folder: Path, csv_file: str, dataset_id: int, num_val_patients: int = 25):
+def create_custom_splits(src_data_folder: Path, csv_file: str, dataset_id: int, num_valid_patients: int = 25):
     existing_splits = os.path.join(nnUNet_preprocessed, f"Dataset{dataset_id}_MNMs", "splits_final.json")
     splits = load_json(existing_splits)
 
@@ -108,31 +108,31 @@ def create_custom_splits(src_data_folder: Path, csv_file: str, dataset_id: int, 
     # Get train and validation patients for both vendors
     patients_a = [patient for patient, patient_data in patient_info.items() if patient_data["vendor"] == "A"]
     patients_b = [patient for patient, patient_data in patient_info.items() if patient_data["vendor"] == "B"]
-    train_a, val_a = get_vendor_split(patients_a, num_val_patients)
-    train_b, val_b = get_vendor_split(patients_b, num_val_patients)
+    train_a, valid_a = get_vendor_split(patients_a, num_valid_patients)
+    train_b, valid_b = get_vendor_split(patients_b, num_valid_patients)
 
     # Build filenames from corresponding patient frames
     train_a = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in train_a for frame in ["es", "ed"]]
     train_b = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in train_b for frame in ["es", "ed"]]
     train_a_mix_1, train_a_mix_2 = train_a[: len(train_a) // 2], train_a[len(train_a) // 2 :]
     train_b_mix_1, train_b_mix_2 = train_b[: len(train_b) // 2], train_b[len(train_b) // 2 :]
-    val_a = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in val_a for frame in ["es", "ed"]]
-    val_b = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in val_b for frame in ["es", "ed"]]
+    valid_a = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in valid_a for frame in ["es", "ed"]]
+    valid_b = [f"{patient}_frame{patient_info[patient][frame]:02d}" for patient in valid_b for frame in ["es", "ed"]]
 
     for train_set in [train_a, train_b, train_a_mix_1 + train_b_mix_1, train_a_mix_2 + train_b_mix_2]:
         # For each train set, we evaluate on A, B and (A + B) respectively
         # See table 3 from the original paper for more details.
-        splits.append({"train": train_set, "val": val_a})
-        splits.append({"train": train_set, "val": val_b})
-        splits.append({"train": train_set, "val": val_a + val_b})
+        splits.append({"train": train_set, "val": valid_a})
+        splits.append({"train": train_set, "val": valid_b})
+        splits.append({"train": train_set, "val": valid_a + valid_b})
 
     save_json(splits, existing_splits)
 
 
-def get_vendor_split(patients: list[str], num_val_patients: int):
+def get_vendor_split(patients: list[str], num_valid_patients: int):
     random.shuffle(patients)
     total_patients = len(patients)
-    num_training_patients = total_patients - num_val_patients
+    num_training_patients = total_patients - num_valid_patients
     return patients[:num_training_patients], patients[num_training_patients:]
 
 

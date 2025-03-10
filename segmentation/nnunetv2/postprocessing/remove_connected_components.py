@@ -341,7 +341,7 @@ if __name__ == '__main__':
     folds = (0, 1, 2, 3, 4)
     label_manager = plans_manager.get_label_manager(dataset_json)
 
-    merged_output_folder = join(trained_model_folder, f'crossval_results_folds_{folds_tuple_to_string(folds)}')
+    merged_output_folder = join(trained_model_folder, f'crossvalid_results_folds_{folds_tuple_to_string(folds)}')
     accumulate_cv_results(trained_model_folder, merged_output_folder, folds, 8, False)
 
     fns, kwargs = determine_postprocessing(merged_output_folder, labelstr, plans_manager.plans,

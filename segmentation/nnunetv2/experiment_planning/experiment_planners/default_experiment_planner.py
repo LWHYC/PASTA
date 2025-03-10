@@ -51,12 +51,12 @@ class ExperimentPlanner(object):
         self.UNet_class = PlainConvUNet
         # the following two numbers are really arbitrary and were set to reproduce nnU-Net v1's configurations as
         # much as possible
-        self.UNet_reference_val_3d = 560000000  # 455600128  550000000
-        self.UNet_reference_val_2d = 85000000  # 83252480
+        self.UNet_reference_valid_3d = 560000000  # 455600128  550000000
+        self.UNet_reference_valid_2d = 85000000  # 83252480
         self.UNet_reference_com_nfeatures = 32
-        self.UNet_reference_val_corresp_GB = 8
-        self.UNet_reference_val_corresp_bs_2d = 12
-        self.UNet_reference_val_corresp_bs_3d = 2
+        self.UNet_reference_valid_corresp_GB = 8
+        self.UNet_reference_valid_corresp_bs_2d = 12
+        self.UNet_reference_valid_corresp_bs_3d = 2
         self.UNet_featuremap_min_edge_length = 4
         self.UNet_blocks_per_stage_encoder = (2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2)
         self.UNet_blocks_per_stage_decoder = (2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2)
@@ -312,10 +312,10 @@ class ExperimentPlanner(object):
 
         # how large is the reference for us here (batch size etc)?
         # adapt for our vram target
-        reference = (self.UNet_reference_val_2d if len(spacing) == 2 else self.UNet_reference_val_3d) * \
-                    (self.UNet_vram_target_GB / self.UNet_reference_val_corresp_GB)
+        reference = (self.UNet_reference_valid_2d if len(spacing) == 2 else self.UNet_reference_valid_3d) * \
+                    (self.UNet_vram_target_GB / self.UNet_reference_valid_corresp_GB)
 
-        ref_bs = self.UNet_reference_val_corresp_bs_2d if len(spacing) == 2 else self.UNet_reference_val_corresp_bs_3d
+        ref_bs = self.UNet_reference_valid_corresp_bs_2d if len(spacing) == 2 else self.UNet_reference_valid_corresp_bs_3d
         # we enforce a batch size of at least two, reference values may have been computed for different batch sizes.
         # Correct for that in the while loop if statement
         while (estimate / ref_bs * 2) > reference:
@@ -584,9 +584,9 @@ def _maybe_copy_splits_file(splits_file: str, target_fname: str):
             train_source = set(splits_source[i]['train'])
             train_target = set(splits_target[i]['train'])
             assert train_target == train_source
-            val_source = set(splits_source[i]['val'])
-            val_target = set(splits_target[i]['val'])
-            assert val_source == val_target
+            valid_source = set(splits_source[i]['val'])
+            valid_target = set(splits_target[i]['val'])
+            assert valid_source == valid_target
 
 
 if __name__ == '__main__':

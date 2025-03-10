@@ -58,4 +58,4 @@ def export_pretrained_model_entry():
 
     export_pretrained_model(dataset_name_or_id=args.d, output_file=args.o, configurations=args.c, trainer=args.tr,
                             plans_identifier=args.p, folds=args.f, strict=not args.not_strict, save_checkpoints=args.chk,
-                            export_crossval_predictions=args.exp_cv_preds)
+                            export_crossvalid_predictions=args.exp_cv_preds)

@@ -22,8 +22,8 @@ class ResEncUNetPlanner(ExperimentPlanner):
         self.UNet_class = ResidualEncoderUNet
         # the following two numbers are really arbitrary and were set to reproduce default nnU-Net's configurations as
         # much as possible
-        self.UNet_reference_val_3d = 680000000
-        self.UNet_reference_val_2d = 135000000
+        self.UNet_reference_valid_3d = 680000000
+        self.UNet_reference_valid_2d = 135000000
         self.UNet_blocks_per_stage_encoder = (1, 3, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6)
         self.UNet_blocks_per_stage_decoder = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
@@ -126,8 +126,8 @@ class ResEncUNetPlanner(ExperimentPlanner):
 
         # how large is the reference for us here (batch size etc)?
         # adapt for our vram target
-        reference = (self.UNet_reference_val_2d if len(spacing) == 2 else self.UNet_reference_val_3d) * \
-                    (self.UNet_vram_target_GB / self.UNet_reference_val_corresp_GB)
+        reference = (self.UNet_reference_valid_2d if len(spacing) == 2 else self.UNet_reference_valid_3d) * \
+                    (self.UNet_vram_target_GB / self.UNet_reference_valid_corresp_GB)
 
         while estimate > reference:
             # print(patch_size)
@@ -180,7 +180,7 @@ class ResEncUNetPlanner(ExperimentPlanner):
 
         # alright now let's determine the batch size. This will give self.UNet_min_batch_size if the while loop was
         # executed. If not, additional vram headroom is used to increase batch size
-        ref_bs = self.UNet_reference_val_corresp_bs_2d if len(spacing) == 2 else self.UNet_reference_val_corresp_bs_3d
+        ref_bs = self.UNet_reference_valid_corresp_bs_2d if len(spacing) == 2 else self.UNet_reference_valid_corresp_bs_3d
         batch_size = round((reference / estimate) * ref_bs)
 
         # we need to cap the batch size to cover at most 5% of the entire dataset. Overfitting precaution. We cannot

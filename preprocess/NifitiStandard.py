@@ -11,11 +11,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 import numpy as np
 import SimpleITK as sitk
+import nibabel
 from nibabel.orientations import ornt_transform
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import tqdm
 import time
 import argparse
+from scipy import ndimage
 
 
 
@@ -57,15 +59,20 @@ def standard_img(target_orient, img_path, img_save_path):
 
 if __name__ == '__main__':
     
+    ##### Standardize the orientation and spacing of the nifti files.
+    ##### Please make sure the input nifti files have the correct orientation and spacing, or the output files will be wrong.
+    ##### For the CT files(min<-10), we use linear interpolation to resample the images.
+    ##### For the label files(min>-10), we use nearest interpolation to resample the images.
+    ##### Target spacing: 1x1x1mm
+    ##### Target orientation: RAS
+    
     parser = argparse.ArgumentParser()
-    parser.add_argument('-in', type=str, required=True, help='/path/to/original/data/root')
-    parser.add_argument('-out', type=str, required=True, help='/path/to/save/data/root')
+    parser.add_argument('-indir', type=str, required=True, help='/path/to/original/data/root')
+    parser.add_argument('-outdir', type=str, required=True, help='/path/to/save/data/root')
     args = parser.parse_args()
-    
-    
 
-    data_root = '/path/to/original/data/root'
-    save_root = '/path/to/save/data/root'
+    data_root = args.indir
+    save_root = args.outdir
 
     os.makedirs(save_root, exist_ok=True)
 
@@ -78,7 +85,6 @@ if __name__ == '__main__':
 
 
     num_threads = 8
-
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = []
         for img_path in filelist:

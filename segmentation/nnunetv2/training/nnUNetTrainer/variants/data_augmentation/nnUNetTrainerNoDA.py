@@ -15,7 +15,7 @@ class nnUNetTrainerNoDA(nnUNetTrainer):
                                 do_dummy_2d_data_aug: bool,
                                 order_resampling_data: int = 1,
                                 order_resampling_seg: int = 0,
-                                border_val_seg: int = -1,
+                                border_valid_seg: int = -1,
                                 use_mask_for_norm: List[bool] = None,
                                 is_cascaded: bool = False,
                                 foreground_labels: Union[Tuple[int, ...], List[int]] = None,

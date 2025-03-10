@@ -33,11 +33,11 @@ def create_ACDC_split(labelsTr_folder: str, seed: int = 1234) -> List[dict[str, 
     rs.shuffle(patients)
     splits = []
     for fold in range(5):
-        val_patients = patients[fold::5]
-        train_patients = [i for i in patients if i not in val_patients]
-        val_cases = [i[:-7] for i in nii_files for j in val_patients if i.startswith(j)]
+        valid_patients = patients[fold::5]
+        train_patients = [i for i in patients if i not in valid_patients]
+        valid_cases = [i[:-7] for i in nii_files for j in valid_patients if i.startswith(j)]
         train_cases = [i[:-7] for i in nii_files for j in train_patients if i.startswith(j)]
-        splits.append({'train': train_cases, 'val': val_cases})
+        splits.append({'train': train_cases, 'val': valid_cases})
     return splits
 
 

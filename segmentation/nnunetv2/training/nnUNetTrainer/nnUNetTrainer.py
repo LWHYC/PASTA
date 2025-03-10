@@ -52,7 +52,7 @@ from nnunetv2.training.loss.deep_supervision import DeepSupervisionWrapper
 from nnunetv2.training.loss.dice import get_tp_fp_fn_tn, MemoryEfficientSoftDiceLoss
 from nnunetv2.training.lr_scheduler.polylr import PolyLRScheduler
 from nnunetv2.utilities.collate_outputs import collate_outputs
-from nnunetv2.utilities.crossval_split import generate_crossval_split
+from nnunetv2.utilities.crossvalid_split import generate_crossvalid_split
 from nnunetv2.utilities.default_n_proc_DA import get_allowed_n_proc_DA
 from nnunetv2.utilities.file_path_utilities import check_workers_alive_and_busy
 from nnunetv2.utilities.get_network_from_plans import get_network_from_plans
@@ -145,7 +145,7 @@ class nnUNetTrainer(object):
         self.weight_decay = 3e-5
         self.oversample_foreground_percent = 0.33
         self.num_iterations_per_epoch = 250
-        self.num_val_iterations_per_epoch = 50
+        self.num_valid_iterations_per_epoch = 50
         self.num_epochs = 500
         self.current_epoch = 0
         self.enable_deep_supervision = True
@@ -311,7 +311,7 @@ class nnUNetTrainer(object):
             deep_supervision_scales = list(list(i) for i in 1 / np.cumprod(np.vstack(
                 self.configuration_manager.pool_op_kernel_sizes), axis=0))[:-1]
         else:
-            deep_supervision_scales = None  # for train and val_transforms
+            deep_supervision_scales = None  # for train and valid_transforms
         return deep_supervision_scales
 
     def _set_batch_size_and_oversample(self):
@@ -546,7 +546,7 @@ class nnUNetTrainer(object):
             # if fold==all then we use all images for training and validation
             case_identifiers = get_case_identifiers(self.preprocessed_dataset_folder)
             tr_keys = case_identifiers
-            val_keys = tr_keys
+            valid_keys = tr_keys
         else:
             splits_file = join(self.preprocessed_dataset_folder_base, "splits_final.json")
             dataset = nnUNetDataset(self.preprocessed_dataset_folder, case_identifiers=None,
@@ -556,7 +556,7 @@ class nnUNetTrainer(object):
             if not isfile(splits_file):
                 self.print_to_log_file("Creating new 5-fold cross-validation split...")
                 all_keys_sorted = list(np.sort(list(dataset.keys())))
-                splits = generate_crossval_split(all_keys_sorted, seed=12345, n_splits=5)
+                splits = generate_crossvalid_split(all_keys_sorted, seed=12345, n_splits=5)
                 save_json(splits, splits_file)
 
             else:
@@ -567,9 +567,9 @@ class nnUNetTrainer(object):
             self.print_to_log_file("Desired fold for training: %d" % self.fold)
             if self.fold < len(splits):
                 tr_keys = splits[self.fold]['train']
-                val_keys = splits[self.fold]['val']
+                valid_keys = splits[self.fold]['val']
                 self.print_to_log_file("This split has %d training and %d validation cases."
-                                       % (len(tr_keys), len(val_keys)))
+                                       % (len(tr_keys), len(valid_keys)))
             else:
                 self.print_to_log_file("INFO: You requested fold %d for training but splits "
                                        "contain only %d folds. I am now creating a "
@@ -580,24 +580,24 @@ class nnUNetTrainer(object):
                 idx_tr = rnd.choice(len(keys), int(len(keys) * 0.8), replace=False)
                 idx_val = [i for i in range(len(keys)) if i not in idx_tr]
                 tr_keys = [keys[i] for i in idx_tr]
-                val_keys = [keys[i] for i in idx_val]
+                valid_keys = [keys[i] for i in idx_val]
                 self.print_to_log_file("This random 80:20 split has %d training and %d validation cases."
-                                       % (len(tr_keys), len(val_keys)))
-            if any([i in val_keys for i in tr_keys]):
+                                       % (len(tr_keys), len(valid_keys)))
+            if any([i in valid_keys for i in tr_keys]):
                 self.print_to_log_file('WARNING: Some validation cases are also in the training set. Please check the '
                                        'splits.json or ignore if this is intentional.')
-        return tr_keys, val_keys
+        return tr_keys, valid_keys
 
-    def get_tr_and_val_datasets(self):
+    def get_tr_and_valid_datasets(self):
         # create dataset split
-        tr_keys, val_keys = self.do_split()
+        tr_keys, valid_keys = self.do_split()
 
         # load the datasets for training and validation. Note that we always draw random samples so we really don't
         # care about distributing training cases across GPUs.
         dataset_tr = nnUNetDataset(self.preprocessed_dataset_folder, tr_keys,
                                    folder_with_segs_from_previous_stage=self.folder_with_segs_from_previous_stage,
                                    num_images_properties_loading_threshold=0)
-        dataset_val = nnUNetDataset(self.preprocessed_dataset_folder, val_keys,
+        dataset_val = nnUNetDataset(self.preprocessed_dataset_folder, valid_keys,
                                     folder_with_segs_from_previous_stage=self.folder_with_segs_from_previous_stage,
                                     num_images_properties_loading_threshold=0)
         return dataset_tr, dataset_val
@@ -630,7 +630,7 @@ class nnUNetTrainer(object):
             ignore_label=self.label_manager.ignore_label)
 
         # validation pipeline
-        val_transforms = self.get_validation_transforms(deep_supervision_scales,
+        valid_transforms = self.get_validation_transforms(deep_supervision_scales,
                                                         is_cascaded=self.is_cascaded,
                                                         foreground_labels=self.label_manager.foreground_labels,
                                                         regions=self.label_manager.foreground_regions if
@@ -642,13 +642,13 @@ class nnUNetTrainer(object):
         allowed_num_processes = get_allowed_n_proc_DA()
         if allowed_num_processes == 0:
             mt_gen_train = SingleThreadedAugmenter(dl_tr, tr_transforms)
-            mt_gen_val = SingleThreadedAugmenter(dl_val, val_transforms)
+            mt_gen_val = SingleThreadedAugmenter(dl_val, valid_transforms)
         else:
             mt_gen_train = LimitedLenWrapper(self.num_iterations_per_epoch, data_loader=dl_tr, transform=tr_transforms,
                                              num_processes=allowed_num_processes, num_cached=6, seeds=None,
                                              pin_memory=self.device.type == 'cuda', wait_time=0.02)
-            mt_gen_val = LimitedLenWrapper(self.num_val_iterations_per_epoch, data_loader=dl_val,
-                                           transform=val_transforms, num_processes=max(1, allowed_num_processes // 2),
+            mt_gen_val = LimitedLenWrapper(self.num_valid_iterations_per_epoch, data_loader=dl_val,
+                                           transform=valid_transforms, num_processes=max(1, allowed_num_processes // 2),
                                            num_cached=3, seeds=None, pin_memory=self.device.type == 'cuda',
                                            wait_time=0.02)
         # # let's get this party started
@@ -657,7 +657,7 @@ class nnUNetTrainer(object):
         return mt_gen_train, mt_gen_val
 
     def get_plain_dataloaders(self, initial_patch_size: Tuple[int, ...], dim: int):
-        dataset_tr, dataset_val = self.get_tr_and_val_datasets()
+        dataset_tr, dataset_val = self.get_tr_and_valid_datasets()
 
         if dim == 2:
             dl_tr = nnUNetDataLoader2D(dataset_tr, self.batch_size,
@@ -696,7 +696,7 @@ class nnUNetTrainer(object):
             do_dummy_2d_data_aug: bool,
             order_resampling_data: int = 3,
             order_resampling_seg: int = 1,
-            border_val_seg: int = -1,
+            border_valid_seg: int = -1,
             use_mask_for_norm: List[bool] = None,
             is_cascaded: bool = False,
             foreground_labels: Union[Tuple[int, ...], List[int]] = None,
@@ -718,8 +718,8 @@ class nnUNetTrainer(object):
             do_rotation=True, angle_x=rotation_for_DA['x'], angle_y=rotation_for_DA['y'], angle_z=rotation_for_DA['z'],
             p_rot_per_axis=1,  # todo experiment with this
             do_scale=True, scale=(0.7, 1.4),
-            border_mode_data="constant", border_cval_data=0, order_data=order_resampling_data,
-            border_mode_seg="constant", border_cval_seg=border_val_seg, order_seg=order_resampling_seg,
+            border_mode_data="constant", border_cvalid_data=0, order_data=order_resampling_data,
+            border_mode_seg="constant", border_cvalid_seg=border_valid_seg, order_seg=order_resampling_seg,
             random_crop=False,  # random cropping is part of our dataloaders
             p_el_per_sample=0, p_scale_per_sample=0.2, p_rot_per_sample=0.2,
             independent_scale_for_each_axis=False  # todo experiment with this
@@ -789,27 +789,27 @@ class nnUNetTrainer(object):
             regions: List[Union[List[int], Tuple[int, ...], int]] = None,
             ignore_label: int = None,
     ) -> AbstractTransform:
-        val_transforms = []
-        val_transforms.append(RemoveLabelTransform(-1, 0))
+        valid_transforms = []
+        valid_transforms.append(RemoveLabelTransform(-1, 0))
 
         if is_cascaded:
-            val_transforms.append(MoveSegAsOneHotToData(1, foreground_labels, 'seg', 'data'))
+            valid_transforms.append(MoveSegAsOneHotToData(1, foreground_labels, 'seg', 'data'))
 
-        val_transforms.append(RenameTransform('seg', 'target', True))
+        valid_transforms.append(RenameTransform('seg', 'target', True))
 
         if regions is not None:
             # the ignore label must also be converted
-            val_transforms.append(ConvertSegmentationToRegionsTransform(list(regions) + [ignore_label]
+            valid_transforms.append(ConvertSegmentationToRegionsTransform(list(regions) + [ignore_label]
                                                                         if ignore_label is not None else regions,
                                                                         'target', 'target'))
 
         if deep_supervision_scales is not None:
-            val_transforms.append(DownsampleSegForDSTransform2(deep_supervision_scales, 0, input_key='target',
+            valid_transforms.append(DownsampleSegForDSTransform2(deep_supervision_scales, 0, input_key='target',
                                                                output_key='target'))
 
-        val_transforms.append(NumpyToTensor(['data', 'target'], 'float'))
-        val_transforms = Compose(val_transforms)
-        return val_transforms
+        valid_transforms.append(NumpyToTensor(['data', 'target'], 'float'))
+        valid_transforms = Compose(valid_transforms)
+        return valid_transforms
 
     def set_deep_supervision_enabled(self, enabled: bool):
         """
@@ -1014,8 +1014,8 @@ class nnUNetTrainer(object):
 
         return {'loss': l.detach().cpu().numpy(), 'tp_hard': tp_hard, 'fp_hard': fp_hard, 'fn_hard': fn_hard}
 
-    def on_validation_epoch_end(self, val_outputs: List[dict]):
-        outputs_collated = collate_outputs(val_outputs)
+    def on_validation_epoch_end(self, valid_outputs: List[dict]):
+        outputs_collated = collate_outputs(valid_outputs)
         tp = np.sum(outputs_collated['tp_hard'], 0)
         fp = np.sum(outputs_collated['fp_hard'], 0)
         fn = np.sum(outputs_collated['fn_hard'], 0)
@@ -1045,7 +1045,7 @@ class nnUNetTrainer(object):
         mean_fg_dice = np.nanmean(global_dc_per_class)
         self.logger.log('mean_fg_dice', mean_fg_dice, self.current_epoch)
         self.logger.log('dice_per_class_or_region', global_dc_per_class, self.current_epoch)
-        self.logger.log('val_losses', loss_here, self.current_epoch)
+        self.logger.log('valid_losses', loss_here, self.current_epoch)
 
     def on_epoch_start(self):
         self.logger.log('epoch_start_timestamps', time(), self.current_epoch)
@@ -1054,7 +1054,7 @@ class nnUNetTrainer(object):
         self.logger.log('epoch_end_timestamps', time(), self.current_epoch)
 
         self.print_to_log_file('train_loss', np.round(self.logger.my_fantastic_logging['train_losses'][-1], decimals=4))
-        self.print_to_log_file('val_loss', np.round(self.logger.my_fantastic_logging['val_losses'][-1], decimals=4))
+        self.print_to_log_file('valid_loss', np.round(self.logger.my_fantastic_logging['valid_losses'][-1], decimals=4))
         self.print_to_log_file('Pseudo dice', [np.round(i, decimals=4) for i in
                                                self.logger.my_fantastic_logging['dice_per_class_or_region'][-1]])
         self.print_to_log_file(
@@ -1165,17 +1165,17 @@ class nnUNetTrainer(object):
             validation_output_folder = join(self.output_folder, 'validation')
             maybe_mkdir_p(validation_output_folder)
 
-            # we cannot use self.get_tr_and_val_datasets() here because we might be DDP and then we have to distribute
+            # we cannot use self.get_tr_and_valid_datasets() here because we might be DDP and then we have to distribute
             # the validation keys across the workers.
-            _, val_keys = self.do_split()
+            _, valid_keys = self.do_split()
             if self.is_ddp:
-                last_barrier_at_idx = len(val_keys) // dist.get_world_size() - 1
+                last_barrier_at_idx = len(valid_keys) // dist.get_world_size() - 1
 
-                val_keys = val_keys[self.local_rank:: dist.get_world_size()]
+                valid_keys = valid_keys[self.local_rank:: dist.get_world_size()]
                 # we cannot just have barriers all over the place because the number of keys each GPU receives can be
                 # different
 
-            dataset_val = nnUNetDataset(self.preprocessed_dataset_folder, val_keys,
+            dataset_val = nnUNetDataset(self.preprocessed_dataset_folder, valid_keys,
                                         folder_with_segs_from_previous_stage=self.folder_with_segs_from_previous_stage,
                                         num_images_properties_loading_threshold=0)
 
@@ -1297,10 +1297,10 @@ class nnUNetTrainer(object):
 
             with torch.no_grad():
                 self.on_validation_epoch_start()
-                val_outputs = []
-                for batch_id in range(self.num_val_iterations_per_epoch):
-                    val_outputs.append(self.validation_step(next(self.dataloader_val)))
-                self.on_validation_epoch_end(val_outputs)
+                valid_outputs = []
+                for batch_id in range(self.num_valid_iterations_per_epoch):
+                    valid_outputs.append(self.validation_step(next(self.dataloader_val)))
+                self.on_validation_epoch_end(valid_outputs)
 
             self.on_epoch_end()
 
@@ -1327,4 +1327,4 @@ class nnUNetTrainer_fewshot(nnUNetTrainer):
         self.num_epochs = 10
         self.initial_lr = 1e-2
         self.num_iterations_per_epoch = 200
-        self.num_val_iterations_per_epoch = 50
+        self.num_valid_iterations_per_epoch = 50

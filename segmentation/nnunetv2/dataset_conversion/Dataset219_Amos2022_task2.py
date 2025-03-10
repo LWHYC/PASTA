@@ -33,13 +33,13 @@ def convert_amos_task2(amos_base_dir: str, nnunet_dataset_id: int = 219):
     for ts in test_identifiers:
         shutil.copy(join(amos_base_dir, 'imagesTs', ts + '.nii.gz'), join(imagests, f'{ts}_0000.nii.gz'))
 
-    val_identifiers = [i['image'].split('/')[-1][:-7] for i in dataset_json_source['validation']]
-    for vl in val_identifiers:
+    valid_identifiers = [i['image'].split('/')[-1][:-7] for i in dataset_json_source['validation']]
+    for vl in valid_identifiers:
         shutil.copy(join(amos_base_dir, 'imagesVa', vl + '.nii.gz'), join(imagestr, f'{vl}_0000.nii.gz'))
         shutil.copy(join(amos_base_dir, 'labelsVa', vl + '.nii.gz'), join(labelstr, f'{vl}.nii.gz'))
 
     generate_dataset_json(out_base, {0: "either_CT_or_MR"}, labels={v: int(k) for k,v in dataset_json_source['labels'].items()},
-                          num_training_cases=len(training_identifiers) + len(val_identifiers), file_ending='.nii.gz',
+                          num_training_cases=len(training_identifiers) + len(valid_identifiers), file_ending='.nii.gz',
                           dataset_name=task_name, reference='https://amos22.grand-challenge.org/',
                           release='https://zenodo.org/record/7262581',
                           overwrite_image_reader_writer='NibabelIOWithReorient',

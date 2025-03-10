@@ -47,11 +47,11 @@ def convert_autopet(autopet_base_dir:str = '/media/isensee/My Book1/AutoPET/nift
     # manual split
     splits = []
     for fold in range(5):
-        val_patients = patients[fold :: 5]
+        valid_patients = patients[fold :: 5]
         splits.append(
             {
-                'train': [i for i in identifiers if not any([i.startswith(v) for v in val_patients])],
-                'val': [i for i in identifiers if any([i.startswith(v) for v in val_patients])],
+                'train': [i for i in identifiers if not any([i.startswith(v) for v in valid_patients])],
+                'val': [i for i in identifiers if any([i.startswith(v) for v in valid_patients])],
             }
         )
     pp_out_dir = join(nnUNet_preprocessed, foldername)

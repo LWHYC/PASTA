@@ -96,7 +96,7 @@ def find_best_configuration(dataset_name_or_id,
             raise RuntimeError(f'{dataset_name}: The output folder of plans {m["plans"]} configuration '
                                f'{m["configuration"]} is missing. Please train the model (all requested folds!) first!')
         identifier = os.path.basename(output_folder)
-        merged_output_folder = join(output_folder, f'crossval_results_folds_{folds_tuple_to_string(folds)}')
+        merged_output_folder = join(output_folder, f'crossvalid_results_folds_{folds_tuple_to_string(folds)}')
         accumulate_cv_results(output_folder, merged_output_folder, folds, num_processes, overwrite)
         all_results[identifier] = {
             'source': merged_output_folder,
@@ -167,8 +167,8 @@ def find_best_configuration(dataset_name_or_id,
         'ensembling_allowed': allow_ensembling,
         'all_results': {i: j['result'] for i, j in all_results.items()},
         'best_model_or_ensemble': {
-            'result_on_crossval_pre_pp': all_results[best_key]["result"],
-            'result_on_crossval_post_pp': load_json(join(all_results[best_key]['source'], 'postprocessed', 'summary.json'))['foreground_mean']['Dice'],
+            'result_on_crossvalid_pre_pp': all_results[best_key]["result"],
+            'result_on_crossvalid_post_pp': load_json(join(all_results[best_key]['source'], 'postprocessed', 'summary.json'))['foreground_mean']['Dice'],
             'postprocessing_file': join(all_results[best_key]['source'], 'postprocessing.pkl'),
             'some_plans_file': join(all_results[best_key]['source'], 'plans.json'),
             # just needed for label handling, can
@@ -297,7 +297,7 @@ def find_best_configuration_entry_point():
                             strict=False)
 
 
-def accumulate_crossval_results_entry_point():
+def accumulate_crossvalid_results_entry_point():
     parser = argparse.ArgumentParser('Copies all predicted segmentations from the individual folds into one joint '
                                      'folder and evaluates them')
     parser.add_argument('dataset_name_or_id', type=str, help='Dataset Name or id')
@@ -306,7 +306,7 @@ def accumulate_crossval_results_entry_point():
                         help="Configuration")
     parser.add_argument('-o', type=str, required=False, default=None,
                         help="Output folder. If not specified, the output folder will be located in the trained " \
-                             "model directory (named crossval_results_folds_XXX).")
+                             "model directory (named crossvalid_results_folds_XXX).")
     parser.add_argument('-f', nargs='+', type=int, default=(0, 1, 2, 3, 4),
                         help='Folds to use. Default: 0 1 2 3 4')
     parser.add_argument('-p', type=str, required=False, default='nnUNetPlans',
@@ -317,7 +317,7 @@ def accumulate_crossval_results_entry_point():
     trained_model_folder = get_output_folder(args.dataset_name_or_id, args.tr, args.p, args.c)
 
     if args.o is None:
-        merged_output_folder = join(trained_model_folder, f'crossval_results_folds_{folds_tuple_to_string(args.f)}')
+        merged_output_folder = join(trained_model_folder, f'crossvalid_results_folds_{folds_tuple_to_string(args.f)}')
     else:
         merged_output_folder = args.o
 

@@ -10,7 +10,7 @@ def export_pretrained_model(dataset_name_or_id: Union[int, str], output_file: st
                             folds: Tuple[int, ...] = (0, 1, 2, 3, 4),
                             strict: bool = True,
                             save_checkpoints: Tuple[str, ...] = ('checkpoint_final.pth',),
-                            export_crossval_predictions: bool = False) -> None:
+                            export_crossvalid_predictions: bool = False) -> None:
     dataset_name = maybe_convert_to_dataset_name(dataset_name_or_id)
     with(zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED)) as zipf:
         for c in configurations:
@@ -51,7 +51,7 @@ def export_pretrained_model(dataset_name_or_id: Union[int, str], output_file: st
                     zipf.write(source_file, os.path.relpath(source_file, nnUNet_results))
 
                 # validation folder with all predicted segmentations etc
-                if export_crossval_predictions:
+                if export_crossvalid_predictions:
                     source_folder = join(trainer_output_dir, fold_folder, "validation")
                     files = [i for i in subfiles(source_folder, join=False) if not i.endswith('.npz') and not i.endswith('.pkl')]
                     for f in files:
@@ -61,13 +61,13 @@ def export_pretrained_model(dataset_name_or_id: Union[int, str], output_file: st
                     source_file = join(trainer_output_dir, fold_folder, "validation", "summary.json")
                     zipf.write(source_file, os.path.relpath(source_file, nnUNet_results))
 
-            source_folder = join(trainer_output_dir, f'crossval_results_folds_{folds_tuple_to_string(folds)}')
+            source_folder = join(trainer_output_dir, f'crossvalid_results_folds_{folds_tuple_to_string(folds)}')
             if isdir(source_folder):
-                if export_crossval_predictions:
+                if export_crossvalid_predictions:
                     source_files = subfiles(source_folder, join=True)
                 else:
                     source_files = [
-                        join(trainer_output_dir, f'crossval_results_folds_{folds_tuple_to_string(folds)}', i) for i in
+                        join(trainer_output_dir, f'crossvalid_results_folds_{folds_tuple_to_string(folds)}', i) for i in
                         ['summary.json', 'postprocessing.pkl', 'postprocessing.json']
                     ]
                 for s in source_files:
@@ -102,7 +102,7 @@ def export_pretrained_model(dataset_name_or_id: Union[int, str], output_file: st
             if ok:
                 print(f'found matching ensemble: {ens}')
                 source_folder = join(ensemble_dir, ens)
-                if export_crossval_predictions:
+                if export_crossvalid_predictions:
                     source_files = subfiles(source_folder, join=True)
                 else:
                     source_files = [
@@ -121,4 +121,4 @@ def export_pretrained_model(dataset_name_or_id: Union[int, str], output_file: st
 
 
 if __name__ == '__main__':
-    export_pretrained_model(2, '/home/fabian/temp/dataset2.zip', strict=False, export_crossval_predictions=True, folds=(0, ))
+    export_pretrained_model(2, '/home/fabian/temp/dataset2.zip', strict=False, export_crossvalid_predictions=True, folds=(0, ))

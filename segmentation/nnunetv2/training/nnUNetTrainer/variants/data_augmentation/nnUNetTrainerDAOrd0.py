@@ -33,7 +33,7 @@ class nnUNetTrainerDAOrd0(nnUNetTrainer):
             ignore_label=self.label_manager.ignore_label)
 
         # validation pipeline
-        val_transforms = self.get_validation_transforms(deep_supervision_scales,
+        valid_transforms = self.get_validation_transforms(deep_supervision_scales,
                                                         is_cascaded=self.is_cascaded,
                                                         foreground_labels=self.label_manager.all_labels,
                                                         regions=self.label_manager.foreground_regions if
@@ -45,11 +45,11 @@ class nnUNetTrainerDAOrd0(nnUNetTrainer):
         allowed_num_processes = get_allowed_n_proc_DA()
         if allowed_num_processes == 0:
             mt_gen_train = SingleThreadedAugmenter(dl_tr, tr_transforms)
-            mt_gen_val = SingleThreadedAugmenter(dl_val, val_transforms)
+            mt_gen_val = SingleThreadedAugmenter(dl_val, valid_transforms)
         else:
             mt_gen_train = LimitedLenWrapper(self.num_iterations_per_epoch, dl_tr, tr_transforms,
                                              allowed_num_processes, 6, None, True, 0.02)
-            mt_gen_val = LimitedLenWrapper(self.num_val_iterations_per_epoch, dl_val, val_transforms,
+            mt_gen_val = LimitedLenWrapper(self.num_valid_iterations_per_epoch, dl_val, valid_transforms,
                                            max(1, allowed_num_processes // 2), 3, None, True, 0.02)
 
         return mt_gen_train, mt_gen_val
@@ -82,7 +82,7 @@ class nnUNetTrainer_DASegOrd0(nnUNetTrainer):
             ignore_label=self.label_manager.ignore_label)
 
         # validation pipeline
-        val_transforms = self.get_validation_transforms(deep_supervision_scales,
+        valid_transforms = self.get_validation_transforms(deep_supervision_scales,
                                                         is_cascaded=self.is_cascaded,
                                                         foreground_labels=self.label_manager.all_labels,
                                                         regions=self.label_manager.foreground_regions if
@@ -94,11 +94,11 @@ class nnUNetTrainer_DASegOrd0(nnUNetTrainer):
         allowed_num_processes = get_allowed_n_proc_DA()
         if allowed_num_processes == 0:
             mt_gen_train = SingleThreadedAugmenter(dl_tr, tr_transforms)
-            mt_gen_val = SingleThreadedAugmenter(dl_val, val_transforms)
+            mt_gen_val = SingleThreadedAugmenter(dl_val, valid_transforms)
         else:
             mt_gen_train = LimitedLenWrapper(self.num_iterations_per_epoch, dl_tr, tr_transforms,
                                              allowed_num_processes, 6, None, True, 0.02)
-            mt_gen_val = LimitedLenWrapper(self.num_val_iterations_per_epoch, dl_val, val_transforms,
+            mt_gen_val = LimitedLenWrapper(self.num_valid_iterations_per_epoch, dl_val, valid_transforms,
                                            max(1, allowed_num_processes // 2), 3, None, True, 0.02)
 
         return mt_gen_train, mt_gen_val
@@ -135,7 +135,7 @@ class nnUNetTrainer_DASegOrd0_NoMirroring(nnUNetTrainer):
             ignore_label=self.label_manager.ignore_label)
 
         # validation pipeline
-        val_transforms = self.get_validation_transforms(deep_supervision_scales,
+        valid_transforms = self.get_validation_transforms(deep_supervision_scales,
                                                         is_cascaded=self.is_cascaded,
                                                         foreground_labels=self.label_manager.all_labels,
                                                         regions=self.label_manager.foreground_regions if
@@ -147,11 +147,11 @@ class nnUNetTrainer_DASegOrd0_NoMirroring(nnUNetTrainer):
         allowed_num_processes = get_allowed_n_proc_DA()
         if allowed_num_processes == 0:
             mt_gen_train = SingleThreadedAugmenter(dl_tr, tr_transforms)
-            mt_gen_val = SingleThreadedAugmenter(dl_val, val_transforms)
+            mt_gen_val = SingleThreadedAugmenter(dl_val, valid_transforms)
         else:
             mt_gen_train = LimitedLenWrapper(self.num_iterations_per_epoch, dl_tr, tr_transforms,
                                              allowed_num_processes, 6, None, True, 0.02)
-            mt_gen_val = LimitedLenWrapper(self.num_val_iterations_per_epoch, dl_val, val_transforms,
+            mt_gen_val = LimitedLenWrapper(self.num_valid_iterations_per_epoch, dl_val, valid_transforms,
                                            max(1, allowed_num_processes // 2), 3, None, True, 0.02)
 
         return mt_gen_train, mt_gen_val

@@ -35,7 +35,7 @@ class SupreMeTrainer_fewshot(SupreMeTrainer):
         self.num_epochs = 10
         self.initial_lr = 1e-3
         self.num_iterations_per_epoch = 200
-        self.num_val_iterations_per_epoch = 50
+        self.num_valid_iterations_per_epoch = 50
 
 class Decoder(nn.Module):
     def __init__(self):
