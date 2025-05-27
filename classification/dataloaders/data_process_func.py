@@ -535,6 +535,13 @@ def img_multi_thresh_normalized(file, thresh_lis=[0], norm_lis=[0], data_type=np
     return new_file
 
 def img_multi_thresh_normalized_torch(file, thresh_lis=[0], norm_lis=[0], data_type=torch.float32):
+    '''
+    Segmental Linear Function (SLF) to transform the intensity of CT images to make multiple 
+    organs more distinguishable than existing simple window width/level-based methods.
+    Reference:
+    Lei, Wenhui, et al. "Automatic segmentation of organs-at-risk from head-and-neck CT 
+    using separable convolutional neural network with hard-region-weighted loss." Neurocomputing 442 (2021): 184-199.
+    '''
     thresh_lis = torch.tensor(thresh_lis, dtype=data_type)
     norm_lis = torch.tensor(norm_lis, dtype=data_type)
 

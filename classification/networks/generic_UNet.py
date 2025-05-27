@@ -14,7 +14,6 @@
 
 
 from copy import deepcopy
-from nnunet.utilities.nd_softmax import softmax_helper
 from torch import nn
 import torch
 import numpy as np
@@ -458,7 +457,7 @@ class Generic_UNet_classify(Generic_UNet):
             torch.nn.LeakyReLU(),
             torch.nn.Linear(256, self.num_classes),
         )
-    def forward(self, x):
+    def forward(self, x, output_feature=False):
         '''
         x: b*chn*d*w*h
         '''
@@ -469,5 +468,7 @@ class Generic_UNet_classify(Generic_UNet):
                 x = self.td[d](x)
         x = self.avg_pool(x)
         x = self.flatten(x)
+        if output_feature:
+            return x
         x = self.head(x)
         return x
