@@ -69,7 +69,7 @@ def pad_to_divible_by_32(img):
 #### Example code for lesion feature extraction using PASTA ####
 if __name__ == '__main__':
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-    checkpoint_path = '/data/leiwenhui/Code/PASTA_final.pth'
+    checkpoint_path = '/path/to/PASTA_final.pth'
     checkpoint = torch.load(checkpoint_path, map_location='cpu')
     net = get_pasta()
     
