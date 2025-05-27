@@ -61,6 +61,13 @@ It will standardize the nii file to target spacing: **1x1x1mm** and target orien
 For the CT files (min<-10), we use linear interpolation to resample the images. \
 For the segmentation label files (min>-10, **not needed for the classification tasks**), we use nearest interpolation to resample the images.
 
+# Feature Extraction
+Example code for extracting features from the PASTA pretrained model:
+
+    python feature_extraction.py
+
+
+
 # Segmentation
 ## Lesion Segmentation
 Prepare your dataset in the [this](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/dataset_format.md) format.
