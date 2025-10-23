@@ -1,4 +1,5 @@
 <img src="fig/logo3.png" alt="PASTA Logo" width="500"/>
+
 # PASTA
 A Synthetic Data-Driven Radiology Foundation Model for Pan-tumor Clinical Diagnosis
 
