@@ -185,6 +185,8 @@ python segmentation/inference/inference.py \
     -trainer PASTATrainer_fewshot
 ```
 
+The fine-tuned segmentation PASTA model checkpoint for public datasets is available at [here](https://upenn.box.com/s/nqz6dwrgxjf49rmmnejobqo0en1no3xt)
+
 ### Metric Calculation
 
 ```bash
