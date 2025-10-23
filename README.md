@@ -107,7 +107,7 @@ python preprocess/NifitiStandard.py \
 
 ## Setup Environment Variables
 
-Setup nnUNet paths (choose temporary or permanent):
+Setup nnUNet paths:
 
 ```bash
 # Permanent (add to ~/.bashrc)
