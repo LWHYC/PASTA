@@ -59,19 +59,35 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
 ### Quick Setup
 
 ```bash
-# 1. Create conda environment
+# 1. Create conda environment (Python 3.9-3.11 recommended)
 conda create -n pasta python=3.9
 conda activate pasta
 
-# 2. Install PyTorch (according to your CUDA version)
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# 2. Install PyTorch (adjust CUDA version as needed)
+# For CUDA 12.1
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
 # 3. Install dependencies
 pip install -r requirements.txt
 
 # 4. Install local nnUNetv2 (customized version for PASTA)
+# This step will install nnUNet commands (nnUNetv2_plan_and_preprocess, etc.)
 cd segmentation && pip install -e . && cd ..
+
+# 5. Verify installation
+which nnUNetv2_plan_and_preprocess  # Should show path in your conda env
 ```
+
+
+### What's Installed
+
+After running the installation, you'll have access to these command-line tools:
+- `nnUNetv2_plan_and_preprocess` - Complete preprocessing pipeline
+- `nnUNetv2_extract_fingerprint` - Dataset fingerprint extraction
+- `nnUNetv2_plan_experiment` - Experiment planning
+- `nnUNetv2_preprocess` - Data preprocessing only
+- `nnUNetv2_train` - Model training
+- `nnUNetv2_predict` - Inference
 
 # Data Standardization
 
@@ -148,6 +164,41 @@ $nnUNet_raw/DatasetXXX_TaskName/
 - Images: `caseName_0000.nii.gz` (0000 for single-channel CT)
 - Labels: `caseName.nii.gz` (same name without `_0000`)
 - Create `dataset.json` with metadata (see [nnUNet docs](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/dataset_format.md))
+
+### Step 3: nnUNet Preprocessing
+
+Set environment variables and run preprocessing:
+
+```bash
+# Set nnUNet paths
+export nnUNet_raw="/path/to/nnUNet_raw"
+export nnUNet_preprocessed="/path/to/nnUNet_preprocessed"
+export nnUNet_results="/path/to/nnUNet_results"
+
+# Run preprocessing (replace XXX with your dataset ID)
+nnUNetv2_plan_and_preprocess -d XXX --verify_dataset_integrity
+```
+
+**Example:**
+```bash
+# For Dataset001_Adrenal
+export nnUNet_raw="/data/PASTA/nnUNet_raw"
+export nnUNet_preprocessed="/data/PASTA/nnUNet_preprocessed"
+export nnUNet_results="/data/PASTA/nnUNet_results"
+
+nnUNetv2_plan_and_preprocess -d 001 --verify_dataset_integrity
+```
+
+**What this does:**
+1. Verifies dataset integrity (all images have corresponding labels)
+2. Extracts dataset fingerprint (spacing, intensity statistics, etc.)
+3. Plans experiment configurations (patch size, batch size, etc.)
+4. Preprocesses all data (resampling, normalization, etc.)
+
+**Output:**
+- Dataset fingerprint: `$nnUNet_preprocessed/Dataset001_Adrenal/dataset_fingerprint.json`
+- Experiment plans: `$nnUNet_preprocessed/Dataset001_Adrenal/nnUNetPlans.json`
+- Preprocessed data: `$nnUNet_preprocessed/Dataset001_Adrenal/nnUNetPlans_3d_fullres/`
 
 ## Training & Inference
 

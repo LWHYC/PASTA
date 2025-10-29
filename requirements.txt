@@ -1,37 +1,41 @@
 # PASTA Environment Requirements
+# Tested and verified on Python 3.9
+
 # Deep Learning Framework
-torch>=2.0.0
-torchvision>=0.15.0
+torch==2.8.0
+torchvision==0.23.0
 
 # Medical Image Processing
-SimpleITK>=2.2.0
-nibabel>=5.0.0
-torchio>=0.18.0
+SimpleITK==2.5.2
+nibabel==5.3.2
+torchio==0.20.23
 
 # Scientific Computing
-numpy>=1.24.0
-scipy>=1.10.0
+numpy==1.26.4  # Must be <2.0 for blosc2 compatibility
+scipy==1.13.1
 
 # Machine Learning
-scikit-learn>=1.2.0
+scikit-learn==1.6.1
 
 # Data Processing & Utilities
-tqdm>=4.65.0
-pandas>=1.5.0
+tqdm==4.67.1
+pandas==2.3.3
 
 # Visualization
-tensorboard>=2.12.0
-matplotlib>=3.7.0
+tensorboard==2.20.0
+matplotlib==3.9.4
 
-# nnUNet Dependencies (nnunetv2 will be installed from local segmentation folder)
-batchgenerators>=0.25
-dicom2nifti>=2.4.0
-connected-components-3d>=3.10.0
-graphviz>=0.20
+# nnUNet Dependencies
+# Note: nnunetv2 will be installed from local segmentation folder
+batchgenerators==0.25.1
+dicom2nifti==2.6.0
+connected-components-3d==3.26.0
+graphviz==0.21
+acvl-utils==0.2.5  # Must be >=0.2.5 for crop_to_bbox function
+blosc2==2.5.1
 
 # Others
-pyyaml>=6.0
-pillow>=9.5.0
-jupyter>=1.0.0
-ipykernel>=6.23.0
-
+PyYAML==6.0.3
+Pillow==11.3.0
+jupyter==1.1.1
+ipykernel==6.31.0

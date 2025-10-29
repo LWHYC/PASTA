@@ -718,8 +718,8 @@ class nnUNetTrainer(object):
             do_rotation=True, angle_x=rotation_for_DA['x'], angle_y=rotation_for_DA['y'], angle_z=rotation_for_DA['z'],
             p_rot_per_axis=1,  # todo experiment with this
             do_scale=True, scale=(0.7, 1.4),
-            border_mode_data="constant", border_cvalid_data=0, order_data=order_resampling_data,
-            border_mode_seg="constant", border_cvalid_seg=border_valid_seg, order_seg=order_resampling_seg,
+            border_mode_data="constant", border_cval_data=0, order_data=order_resampling_data,
+            border_mode_seg="constant", border_cval_seg=border_valid_seg, order_seg=order_resampling_seg,
             random_crop=False,  # random cropping is part of our dataloaders
             p_el_per_sample=0, p_scale_per_sample=0.2, p_rot_per_sample=0.2,
             independent_scale_for_each_axis=False  # todo experiment with this

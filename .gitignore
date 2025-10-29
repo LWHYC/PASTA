@@ -1,2 +1,42 @@
+# Python
 *.pyc
 __pycache__/
+*.egg-info/
+*.eggs/
+dist/
+build/
+
+# Example data
+example_data/
+
+# nnUNet outputs
+nnUNet_raw/
+nnUNet_preprocessed/
+nnUNet_results/
+
+# Model weights
+*.pth
+*.tar
+*.ckpt
+*.pt
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Backup files
+*.backup
+*~
