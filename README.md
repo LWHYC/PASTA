@@ -195,10 +195,6 @@ nnUNetv2_plan_and_preprocess -d 001 --verify_dataset_integrity
 3. Plans experiment configurations (patch size, batch size, etc.)
 4. Preprocesses all data (resampling, normalization, etc.)
 
-**Output:**
-- Dataset fingerprint: `$nnUNet_preprocessed/Dataset001_Adrenal/dataset_fingerprint.json`
-- Experiment plans: `$nnUNet_preprocessed/Dataset001_Adrenal/nnUNetPlans.json`
-- Preprocessed data: `$nnUNet_preprocessed/Dataset001_Adrenal/nnUNetPlans_3d_fullres/`
 
 ## Training & Inference
 
