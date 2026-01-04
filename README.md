@@ -202,7 +202,7 @@ nnUNetv2_plan_and_preprocess -d 001 --verify_dataset_integrity
 
 ```bash
 python segmentation/nnunetv2/run/run_finetuning_pasta.py \
-    3d_fullres PASTATrainer TASKID FOLD \
+    TASKID 3d_fullres FOLD -tr PASTATrainer   \
     -pretrained_weights /path/to/PASTA_final.pth
 ```
 
@@ -212,7 +212,7 @@ First, modify `splits_final.json` to set the number of training samples per fold
 
 ```bash
 python segmentation/nnunetv2/run/run_finetuning_pasta.py \
-    3d_fullres PASTATrainer_fewshot TASKID FOLD \
+    TASKID 3d_fullres FOLD -tr PASTATrainer_fewshot   \
     -pretrained_weights /path/to/PASTA_final.pth
 ```
 
