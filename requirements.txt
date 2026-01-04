@@ -32,10 +32,12 @@ dicom2nifti==2.6.0
 connected-components-3d==3.26.0
 graphviz==0.21
 acvl-utils==0.2.5  # Must be >=0.2.5 for crop_to_bbox function
-blosc2==2.5.1
+blosc2>=2.5.1
 
 # Others
 PyYAML==6.0.3
 Pillow==11.3.0
 jupyter==1.1.1
 ipykernel==6.31.0
+dynamic-network-architectures>=0.4.1,<0.5
+seaborn==0.13.2
