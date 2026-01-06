@@ -51,7 +51,7 @@ Comparison on Structured Lesion Report Generation. a, Example of real and predic
     - Each synthetic 3D CT volume includes pixel-level lesion annotations and a structured radiological report.
 
 ## PASTA Pretrained Checkpoint
-- [Google Drive](https://drive.google.com/file/d/1A_PjIAqKg0y_Z986HSfTsYKLhc99EMkD/view?usp=drive_link)
+- [Google Drive](https://drive.google.com/file/d/1A_PjIAqKg0y_Z986HSfTsYKLhc99EMkD/view?usp=sharing)
 
 
 ## Installation
@@ -234,7 +234,7 @@ python segmentation/inference/inference.py \
     -trainer PASTATrainer_fewshot
 ```
 
-The fine-tuned segmentation PASTA model checkpoint for public datasets is available at [here](https://upenn.box.com/s/nqz6dwrgxjf49rmmnejobqo0en1no3xt)
+The fine-tuned segmentation PASTA model checkpoint for public datasets is available at [here](https://drive.google.com/drive/folders/1mSr8S6AFm9d4YvtUDOKjSUTH-S_cUNnr?usp=sharing)
 
 ### Metric Calculation
 
