@@ -202,7 +202,7 @@ nnUNetv2_plan_and_preprocess -d 001 --verify_dataset_integrity
 
 ```bash
 python segmentation/nnunetv2/run/run_finetuning_pasta.py \
-    TASKID 3d_fullres FOLD -tr PASTATrainer   \
+    TASKID 3d_fullres FOLD -tr PASTATrainer_ft   \
     -pretrained_weights /path/to/PASTA_final.pth
 ```
 

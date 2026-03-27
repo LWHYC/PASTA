@@ -43,6 +43,7 @@ class PASTATrainer(nnUNetTrainer):
         self.num_epochs = 2000
         self.initial_lr = 1e-2
         print('!!!!!!!!!!!PASTATrainer!!!!!!!!!!!')
+        print('!!!!!!!!!!!Just for PASTA Pretraining!!!!!!!!!!!')
     @staticmethod
     # self.configuration_manager.network_arch_class_name,
     # self.configuration_manager.network_arch_init_kwargs,
